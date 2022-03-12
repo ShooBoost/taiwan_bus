@@ -1,0 +1,477 @@
+// padding 開始
+.p5 {
+  padding: 5px;
+}
+.p12 {
+  padding: 12px;
+}
+.py12 {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.py32 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.py10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.px22 {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+.px32 {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.px20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.pt12 {
+  padding-top: 12px;
+}
+.pt16 {
+  padding-top: 16px;
+}
+.pt20 {
+  padding-top: 20px;
+}
+.pt50percent {
+  padding-top: 50%;
+}
+@media (min-width: 768px) {
+  .pt16-md {
+    padding-top: 16px;
+  }
+  .pt20-md {
+    padding-top: 20px;
+  }
+  .pt68-md {
+    padding-top: 68px;
+  }
+}
+// padding 結束
+
+// margin 開始
+.m12 {
+  margin: 12px;
+}
+.mt12 {
+  margin-top: 12px;
+}
+.mb6 {
+  margin-bottom: 6px;
+}
+.mb4 {
+  margin-bottom: 4px;
+}
+.mb10 {
+  margin-bottom: 10px;
+}
+.mb12 {
+  margin-bottom: 12px;
+}
+.mb20 {
+  margin-bottom: 20px;
+}
+.mb24 {
+  margin-bottom: 24px;
+}
+.mb48 {
+  margin-bottom: 48px;
+}
+.me0 {
+  margin-right: 0px;
+}
+.ml-auto {
+  margin-left: auto;
+}
+.me8 {
+  margin-right: 8px;
+}
+.me18 {
+  margin-right: 18px;
+}
+@media (min-width: 768px) {
+.mb10-md {
+  margin-bottom: 10px;
+}
+.mb0-md {
+  margin-bottom: 0px;
+}
+}
+// margin 結束
+
+// top right left bottom 開始
+.t0 {
+  top: 0;
+}
+.r0 {
+  right: 0;
+}
+.l0 {
+  left: 0;
+}
+.b0 {
+  bottom: 0;
+}
+.r50 {
+  right: 50px
+}
+// top right left bottom 結束
+
+// font-size 開始
+.fz20 {
+  font-size: 20px;
+}
+.fz30 {
+  font-size: 30px;
+}
+.fz14 {
+  font-size: 14px;
+}
+.fz32 {
+  font-size: 32px;
+}
+.fz36 {
+  font-size: 36px;
+}
+.fz48 {
+  font-size: 48px;
+}
+// font-size 結束
+
+// font-weight 開始
+.fw-bold {
+  font-weight: bold;
+}
+// font-weight 結束
+
+// line-height 開始
+.lh-initial{
+  line-height: initial;
+}
+// line-height 結束
+
+// width 開始
+.w100 {
+  width: 100%;
+}
+.w70 {
+  width: 70%;
+}
+.w50 {
+  width: 50%;
+}
+.w30 {
+  width: 30%;
+}
+.w20 {
+  width: 20%;
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .w60-md {
+    width: 60%;
+  }
+  .w40-md {
+    width: 40%;
+  }
+}
+@media (min-width: 992px) {
+  .w70-lg {
+    width: 70%;
+  }
+  .w30-lg {
+    width: 30%;
+  }
+}
+// width 結束
+
+// height 開始
+.h100 {
+  height: 100%;
+}
+.h90 {
+  height: 90%;
+}
+.h95 {
+  height: 95%;
+}
+.h50 {
+  height: 50%;
+}
+.h05 {
+  height: 5%;
+}
+.h10 {
+  height: 10%;
+}
+.vh100 {
+  height: 100vh;
+}
+@media (min-width: 768px) {
+  .h100-md {
+    height: 100%;
+  }
+}
+// height 結束
+
+// display 開始
+.display-none {
+  display: none;
+}
+@media (min-width: 768px) {
+  .display-none-md {
+    display: none;
+  }
+  .display-block-md {
+    display: block;
+  }
+}
+// display 結束
+
+// flex 開始
+.flex {
+  display: flex;
+}
+.flex-shrink-1 {
+  flex-shrink: 1;
+}
+.flex-grow-1 {
+  flex-grow: 1;
+}
+.gap10 {
+  gap: 10px
+}
+.flex-direction-column {
+  flex-direction: column;
+}
+
+.jc-center {
+  justify-content: center;
+}
+.jc-space-between {
+  justify-content: space-between;
+}
+.jc-space-around {
+  justify-content: space-around;
+}
+.jc-flex-end {
+  justify-content: flex-end;
+}
+
+.ai-center {
+  align-items: center;
+}
+.ai-right {
+  align-items: right;
+}
+
+@media (min-width: 768px) {
+  .flex-md {
+    display: flex;
+  }
+  .flex-direction-column-md {
+    flex-direction: column;
+  }
+  .flex-direction-row-md {
+    flex-direction: row;
+  }
+}
+
+// flex 結束
+
+// text-align 開始
+.text-center {
+  text-align: center;
+}
+
+// text-align 結束
+
+// vertical align 開始
+.vertical-align-middle {
+  vertical-align: middle
+}
+// vertical align 結束
+
+// overflow 開始
+.overflow-scroll {
+  overflow: scroll
+}
+.overflow-hidden {
+  overflow: hidden
+}
+// overflow 結束
+
+// color 開始
+.color-primary {
+  color: $color-primary;
+}
+.color-grey {
+  color: $color-grey600;
+}
+.color-secondary {
+  color: $color-secondary;
+}
+.color-white {
+  color: $color-white;
+}
+// color 結數
+
+// bg 開始
+.bg-color-primary {
+  background-color: $color-primary;
+}
+.bg-color-secondary {
+  background-color: $color-secondary;
+}
+.bg-color-grey300 {
+  background-color: $color-grey300;
+}
+.bg-color-white {
+  background-color: $color-white;
+}
+.bg-color-grey500 {
+  background-color: $color-grey500;
+}
+.bg-color-grey550 {
+  background-color: $color-grey550;
+}
+.bg-color-grey600 {
+  background-color: $color-grey600;
+}
+.bg-color-kb-red{background-color:$color-kb-red}
+.bg-color-kb-blue{background-color:$color-kb-blue}
+.bg-color-kb-green{background-color:$color-kb-green}
+.bg-color-kb-brown{background-color:$color-kb-brown}
+.bg-color-kb-orange{background-color:$color-kb-orange}
+.bg-color-kb-yellow{background-color:$color-kb-yellow}
+.bg-color-kb-black{background-color:$color-kb-black}
+// bg 結束
+
+// bg x color 開始
+.bg-primary-color-white {
+  background-color: $color-primary;
+  color: $color-white;
+  p {
+    color: $color-white;
+  }
+}
+.bg-white-color-primary {
+  background-color: $color-white;
+  color: $color-primary;
+}
+.bg-grey550-color-white {
+  background-color: $color-grey550;
+  color: $color-white;
+}
+.bg-grey400-color-grey900 {
+  background-color: $color-grey400;
+  p {
+    color: $color-grey900;
+  }
+}
+// bg x color 結束
+
+// border 開始
+.border-none {
+  border: none;
+}
+.border-bottom {
+  border-bottom: 1px solid
+}
+.border-color-grey {
+  border-color: #E7E7E7;
+}
+.border-rounded {
+  border-radius: 5px;
+}
+.border-rounded-top {
+  border-radius: 5px 5px 0px 0px;
+}
+.border-rounded-top-24 {
+  border-radius: 24px 24px 0px 0px;
+}
+.border-top-grey520 {
+  border-top: 1px solid $color-grey520;
+}
+.border-bottom-grey520 {
+  border-bottom: 1px solid $color-grey520;
+}
+@media (min-width: 768px) {
+  .border-rounded-none-md {
+    border-radius: 0px;
+  }
+  .border-rounded-10-md {
+    border-radius: 10px;
+  }
+}
+
+// border 結束
+
+
+// cursor 開始
+.cursor-pointer {
+  cursor: pointer;
+}
+// cursor 結束
+
+// hover 開始
+.hover-bg-grey:hover {
+  background-color: #E7E7E7;
+}
+.hover-bg-grey:hover {
+  background-color: $color-grey300;
+}
+
+.hover-color-sencodary:hover {
+  color: $color-secondary;
+}
+// hover 結束
+
+// position 開始
+.pos-relative{
+  position: relative;
+}
+.pos-absolute{
+  position: absolute;
+}
+.pos-sticky{
+  position: sticky;
+}
+@media (min-width: 768px) {
+  .pos-relative-md {
+    position: relative;
+  }
+}
+
+// position 結束
+
+// visibility 開始
+.visibility-hidden {
+  visibility: hidden;
+}
+// visibility 結束
+
+// z-index 開始
+.z-index999 {
+  z-index: 999;
+}
+.z-index9999 {
+  z-index: 9999;
+}
+.z-index99999 {
+  z-index: 99999;
+}
+.z-index0 {
+  z-index: 0;
+}
+// z-index 結束
+
+// box-sizing 開始
+.border-box {
+  box-sizing: border-box;
+}
+// box-sizing 結束
