@@ -418,6 +418,15 @@
 }
 // cursor 結束
 
+// pointer-events 開始
+.pointer-event-none {
+  pointer-events: none;
+}
+.pointer-event-initial {
+  pointer-events: initial;
+}
+// point-events 結束
+
 // hover 開始
 .hover-bg-grey:hover {
   background-color: #E7E7E7;
@@ -475,3 +484,5 @@
   box-sizing: border-box;
 }
 // box-sizing 結束
+
+

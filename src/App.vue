@@ -1,11 +1,14 @@
 <template>
   <div class="flex flex-direction-column h100 pos-relative">
-    <header id="nav" class="w40-md w30-lg bg-color-white display-none display-block-md pos-absolute z-index99999  border-bottom-grey520">
+    <header
+      id="nav"
+      class="w40-md w30-lg bg-color-white display-none display-block-md pos-absolute z-index99999 border-bottom-grey520"
+    >
       <ul class="flex color-white jc-space-around ai-center">
         <li class="w100 text-center">
           <router-link
             to="/"
-            class="border-box w100 p12 fz30 bg-white-color-primary"
+            class="border-box w100 p12 fz32 bg-white-color-primary"
             :class="{
               'material-icons-round': showHome,
               'material-icons-outlined': !showHome,
@@ -17,25 +20,20 @@
         <li class="w100 text-center">
           <router-link
             to="?routes=favorite"
-            class="material-icons-outlined border-box w100 p12 fz30 bg-white-color-primary"
+            class="material-icons-outlined border-box w100 p12 fz32 bg-white-color-primary"
             >{{ favoriteBorderOrFill }}</router-link
           >
         </li>
         <li class="w100 text-center">
           <span
             @click="shareUrl"
-            class="material-icons-outlined border-box w100 p12 fz30 cursor-pointer bg-white-color-primary"
+            class="material-icons-outlined border-box w100 p12 fz32 cursor-pointer bg-white-color-primary"
           >
             link
           </span>
         </li>
       </ul>
     </header>
-    <!-- <header id="nav" class="bg-color-white display-none display-block-md fz48">
-      <router-link to="/">Home</router-link> |
-      <router-link to="?routes=favorite">favorite</router-link> |
-      <router-link to="/about">About</router-link>
-    </header> -->
     <router-view class="w100 flex-grow-1 overflow-scroll" />
     <footer
       class="footer bg-color-white border-box pos-relative display-none-md border-top-grey520"
@@ -113,7 +111,7 @@ export default {
     },
   },
   methods: {
-    async shareUrl() {
+    async shareUrl(e) {
       if (navigator.share) {
         navigator
           .share({
@@ -128,10 +126,21 @@ export default {
             console.log("發生錯誤", error);
           });
       } else {
-        // var path = this.$route.fullPath;
-        // window.clipboardData.setData("text",path)
         navigator.clipboard.writeText(window.location.href);
-        alert("複製成功");
+        let originalTargetText = e.target.textContent;
+        e.target.classList.remove("fz32");
+        e.target.classList.add("fz20");
+        e.target.classList.add("pointer-event-none");
+        e.target.classList.remove("pointer-event-initial");
+        e.target.textContent = "網址複製成功";
+
+        setTimeout(() => {
+          e.target.textContent = originalTargetText;
+          e.target.classList.add("fz32");
+          e.target.classList.remove("fz20");
+          e.target.classList.add("pointer-event-initial");
+          e.target.classList.remove("pointer-event-none");
+        }, 2000);
       }
     },
   },

@@ -1,32 +1,5 @@
 <template>
   <div class="flex-md w100 pos-relative border-box">
-    <!-- <button
-      @click="
-        setRouteCityAndNameForGetStops(
-          'Taipei',
-          '221',
-          'TPE10415',
-          '蘆洲',
-          '臺北車站',
-          '臺北',
-          true
-        )
-      "
-    >
-      直達 221
-    </button>
-    <button
-      @click="
-        this.routeName = '';
-        this.routesByKeywords = [];
-        this.stopsOfTheRoute = [];
-        this.stops = [];
-        this.routeGEOJSON = '';
-      "
-    >
-      沒有牌
-    </button>
-     -->
     <section
       id="infoPanel"
       class="w100 w40-md w30-lg h90 h100-md pos-absolute pos-relative-md b0 z-index9999 bg-color-white flex flex-direction-column border-rounded-top-24 border-rounded-none-md pt68-md border-box"
@@ -42,17 +15,10 @@
       >
         horizontal_rule
       </div>
-      <!-- 搜尋 路徑 開始 -->
-      <!-- <p class="mb12">originalClientY: {{originalClientY}}</p>
-      <p class="mb12">nowClientY: {{nowClientY}}</p>
-      <p class="mb12">windowHeight: {{windowHeight}}</p>
-      <p class="mb12">boardHeight: {{boardHeight}}</p>
-      <p class="mb12">newBoardHeight: {{newBoardHeight}}</p>
-      <p class="mb12">touchInfoPanel: {{touchInfoPanel}}</p> -->
       <div
         v-if="Object.keys(stopsOfTheRoute).length === 0"
         class="flex flex-direction-column overflow-scroll flex-grow-1"
-        :class="{ 'jc-center': showAlartOfNoFavoriteRoute }"
+        :class="{ 'jc-center': showAlertOfNoFavoriteRoute }"
       >
         <div class="px32">
           <input
@@ -62,8 +28,8 @@
             placeholder="🔍"
           />
         </div>
-        <p class="text-center pt12" v-if="showAlartOfNoFavoriteRoute">
-          {{ showAlartOfNoFavoriteRoute }}
+        <p class="text-center pt12" v-if="showAlertOfNoFavoriteRoute">
+          {{ showAlertOfNoFavoriteRoute }}
         </p>
         <RouteSearchPanel
           :routesByKeywords="routesByKeywords"
@@ -258,7 +224,7 @@ export default {
       originalBoardHeight: 0,
       newBoardHeight: 0,
       touchInfoPanel: "",
-      showAlartOfNoFavoriteRoute: "",
+      showAlertOfNoFavoriteRoute: "",
       intervalRenewStops: "",
       RouteUID: "",
       DepartureStopNameZh: "",
@@ -296,11 +262,6 @@ export default {
     },
   },
   methods: {
-    consoleLogHaHa(e) {
-      console.log(e.target.value);
-      console.log(e.target["data-value"]);
-      console.log(e);
-    },
     renewPopMarker(sequence) {
       if (sequence !== undefined) {
         this.mapCenter.Lat = this.stops[sequence].StopPosition.PositionLat;
@@ -329,8 +290,6 @@ export default {
         this.nowClientY = e.changedTouches
           ? e.changedTouches[0].clientY
           : e.clientY;
-        // var originalBoardHeight = e.target.offsetHeight;
-        // this.nowClientY = document.getElementById("infoPanel").offsetTop;
         this.originalBoardHeight =
           document.getElementById("infoPanel").offsetHeight;
         this.newBoardHeight =
@@ -378,11 +337,11 @@ export default {
       if (changeToFavorites) {
         this.routes = this.favoriteRouteList;
         this.routesByKeywords = this.favoriteRouteList;
-        this.showAlartOfNoFavoriteRoute =
+        this.showAlertOfNoFavoriteRoute =
           this.favoriteRouteList.length === 0 ? "還沒有收藏的站牌YO" : "";
       } else {
         this.routes = this.allRoutes;
-        this.showAlartOfNoFavoriteRoute = "";
+        this.showAlertOfNoFavoriteRoute = "";
         this.routesByKeywords = [];
       }
     },
