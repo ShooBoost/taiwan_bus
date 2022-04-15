@@ -3,7 +3,9 @@ import axios from "axios";
 
 export default {
   data() {
-    return {};
+    return {
+      allcitiesInTaiwan: [],
+    };
   },
   methods: {
     // 取得 台灣所有縣市的名稱
@@ -336,5 +338,8 @@ export default {
       return differentDirectionsStopsLists;
     },
   },
-  created() { },
+  async created() {
+    this.allcitiesInTaiwan = await this.getCityList();
+    console.log("this.allcitiesInTaiwan", this.allcitiesInTaiwan)
+  },
 };

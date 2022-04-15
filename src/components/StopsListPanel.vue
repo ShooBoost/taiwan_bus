@@ -57,8 +57,8 @@
         v-for="(stop, i) in stopsOfTheRoute.Stops"
         :key="i"
         class="pos-relative cursor-pointer hover-bg-grey"
-        @click="$emit('renewPopMarker',i)"
-        @mouseover="$emit('renewPopMarker',i)"
+        @click="$emit('renewPopMarker', i)"
+        @mouseover="$emit('renewPopMarker', i)"
       >
         <div class="px32 flex fz14 ai-center">
           <!-- {{ stop.StopSequence }} -->
@@ -147,39 +147,39 @@ export default {
   data() {
     return {
       nowDirection: 0,
-      stopsOfTheRoute: this.allDirectionStopsOfTheRoute[0] || [],
+      stopsOfTheRoute: this.allDirectionsOfTheChosenRoute[0] || [],
       direction0Active: true,
       updateDataInterval: {},
       timeBarInterval: {},
     };
   },
-  props: ["allDirectionStopsOfTheRoute", "prePage"],
+  props: ["allDirectionsOfTheChosenRoute", "prePage"],
   emit: [
     "changeRoutesToAll",
-    "setRouteCityAndNameForGetStops",
-    "renewFavoriteList",
+    "renewStopsOfRoute",
+    "renewFavoriteRoutes",
     "renewPopMarker",
-    "resetNowDirection"
+    "resetNowDirection",
   ],
   components: { FavoriteBtn },
   watch: {
-    allDirectionStopsOfTheRoute() {
+    allDirectionsOfTheChosenRoute() {
       this.stopsOfTheRoute =
-        this.allDirectionStopsOfTheRoute[this.nowDirection] || [];
+        this.allDirectionsOfTheChosenRoute[this.nowDirection] || [];
     },
   },
   methods: {
     changeDirection(dir) {
       this.nowDirection = dir;
-      this.stopsOfTheRoute = this.allDirectionStopsOfTheRoute[dir];
+      this.stopsOfTheRoute = this.allDirectionsOfTheChosenRoute[dir];
       this.$emit("changeDirection", dir);
       this.direction0Active = !this.direction0Active;
     },
     saveToFavorite(saveOrNot) {
-      this.allDirectionStopsOfTheRoute.forEach((direction) => {
+      this.allDirectionsOfTheChosenRoute.forEach((direction) => {
         direction.savedInFavorite = saveOrNot;
       });
-      this.$emit("renewFavoriteList", saveOrNot, this.stopsOfTheRoute.RouteUID);
+      this.$emit("renewFavoriteRoutes", saveOrNot, this.stopsOfTheRoute.RouteUID);
     },
     backToHomeOrFavorite(prePage = "home") {
       if (prePage === "favorite") {
@@ -193,8 +193,8 @@ export default {
   },
   mounted() {
     // console.log(
-    //   "stopPanel allDirectionStopsOfTheRoute",
-    //   this.allDirectionStopsOfTheRoute
+    //   "stopPanel allDirectionsOfTheChosenRoute",
+    //   this.allDirectionsOfTheChosenRoute
     // );
     console.log("prePage", this.prePage);
     var _this = this;
@@ -203,16 +203,15 @@ export default {
     this.updateDataInterval = setInterval(function () {
       document.getElementById("timeBar").style.width = timeBarWidth + "px";
       nowTimeBarWidth = timeBarWidth + timeBarWidth / 30;
-      _this.$emit(
-        "setRouteCityAndNameForGetStops",
-        _this.stopsOfTheRoute.City,
-        _this.stopsOfTheRoute.RouteName.Zh_tw,
-        _this.stopsOfTheRoute.RouteUID,
-        _this.stopsOfTheRoute.DepartureStopNameZh,
-        _this.stopsOfTheRoute.DestinationStopNameZh,
-        _this.stopsOfTheRoute.CityName,
-        _this.stopsOfTheRoute.savedInFavorite
-      );
+      _this.$emit("renewStopsOfRoute", {
+        cityOfRoute: _this.stopsOfTheRoute.City,
+        routeName: _this.stopsOfTheRoute.RouteName.Zh_tw,
+        RouteUID: _this.stopsOfTheRoute.RouteUID,
+        DepartureStopNameZh: _this.stopsOfTheRoute.DepartureStopNameZh,
+        DestinationStopNameZh: _this.stopsOfTheRoute.DestinationStopNameZh,
+        CityName: _this.stopsOfTheRoute.CityName,
+        savedInFavorite: _this.stopsOfTheRoute.savedInFavorite,
+      });
 
       console.log("=========== NEW DATA +++++++++++++++ ");
       console.log(timeBarWidth, nowTimeBarWidth);
@@ -228,10 +227,9 @@ export default {
     console.log("=========== NO DATA +++++++++++++++");
   },
   unmounted() {
-    this.$emit('renewPopMarker',undefined);
-    this.$emit('resetNowDirection')
+    this.$emit("renewPopMarker", undefined);
+    this.$emit("resetNowDirection");
   },
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

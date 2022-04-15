@@ -48,7 +48,7 @@ export default {
   },
   components: { FavoriteBtn },
   props: ["routesByKeywords"],
-  emit: ["setRouteCityAndNameForGetStops"],
+  emit: ["getStopsOfRoute"],
   methods: {
     intervalRenewStops(
       City,
@@ -59,16 +59,15 @@ export default {
       CityName,
       savedInFavorite
     ) {
-      this.$emit(
-        "setRouteCityAndNameForGetStops",
-        City,
-        RouteName,
-        RouteUID,
-        DepartureStopNameZh,
-        DestinationStopNameZh,
-        CityName,
-        savedInFavorite
-      );
+      this.$emit("getStopsOfRoute", {
+        cityOfRoute: City,
+        routeName: RouteName,
+        RouteUID: RouteUID,
+        DepartureStopNameZh: DepartureStopNameZh,
+        DestinationStopNameZh: DestinationStopNameZh,
+        CityName: CityName,
+        savedInFavorite: savedInFavorite,
+      });
     },
   },
 };

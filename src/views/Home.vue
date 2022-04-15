@@ -1,24 +1,28 @@
 <template>
   <div class="flex-md w100 pos-relative border-box">
+    <!-- 公車路線搜尋 或 所經站牌 開始 -->
     <section
       id="infoPanel"
       class="w100 w40-md w30-lg h90 h100-md pos-absolute pos-relative-md b0 z-index9999 bg-color-white flex flex-direction-column border-rounded-top-24 border-rounded-none-md pt68-md border-box"
     >
+      <!-- mobile 版才有的觸控調整 infoPanel 大小 開始 -->
       <div
         @touchstart.prevent.self="setOriginalClientY"
         @touchmove.prevent.self="changeTargetHeight"
-        @touchend.prevent.self="touchInfoPanel = false"
+        @touchend.prevent.self="touchingInfoPanelOrNot = false"
         @mousedown.prevent.self="setOriginalClientY"
         @mousemove.prevent.self="changeTargetHeight"
-        @mouseup.prevent="touchInfoPanel = false"
+        @mouseup.prevent="touchingInfoPanelOrNot = false"
         class="py12 text-center material-icons-round fw-bold cursor-pointer display-none-md"
       >
         horizontal_rule
       </div>
+      <!-- mobile 版才有的觸控調整 infoPanel 大小 結束 -->
+      <!-- 路線搜尋 開始 -->
       <div
-        v-if="Object.keys(stopsOfTheRoute).length === 0"
+        v-if="Object.keys(chosenDirectionOfChosenRoute).length === 0"
         class="flex flex-direction-column overflow-scroll flex-grow-1"
-        :class="{ 'jc-center': showAlertOfNoFavoriteRoute }"
+        :class="{ 'jc-center': signOfEmptyFavoriteRoute }"
       >
         <div class="px32">
           <input
@@ -28,12 +32,12 @@
             placeholder="🔍"
           />
         </div>
-        <p class="text-center pt12" v-if="showAlertOfNoFavoriteRoute">
-          {{ showAlertOfNoFavoriteRoute }}
+        <p class="text-center pt12" v-if="signOfEmptyFavoriteRoute">
+          {{ signOfEmptyFavoriteRoute }}
         </p>
         <RouteSearchPanel
-          :routesByKeywords="routesByKeywords"
-          @setRouteCityAndNameForGetStops="setRouteCityAndNameForGetStops"
+          :routesByKeywords="currentRoutesFilterByKeywords"
+          @getStopsOfRoute="getStopsOfRoute"
           class="overflow-scroll flex-grow-1"
         ></RouteSearchPanel>
         <div class="w100 py12 px22 border-box fz20">
@@ -167,33 +171,36 @@
           </div>
         </div>
       </div>
-      <!-- 搜尋 路徑 結束 -->
-      <!-- 顯示 指定路徑的 即時站牌資訊 開始 -->
+      <!-- 路線搜尋 結束 -->
+      <!-- 特定路線的即時站牌資訊 開始 -->
       <div v-else class="overflow-scroll flex-grow-1">
         <StopsListPanel
           class="h100"
-          :allDirectionStopsOfTheRoute="allDirectionStopsOfTheRoute"
+          :allDirectionsOfTheChosenRoute="allDirectionsOfTheChosenRoute"
           :prePage="nowPage"
-          @setRouteCityAndNameForGetStops="setRouteCityAndNameForGetStops"
+          @renewStopsOfRoute="getStopsOfRoute"
           @changeDirection="changeDirectionForMap"
-          @changeRoutesToAll="changeRoutesToFavoritesOrAll"
-          @renewFavoriteList="renewFavoriteList"
+          @changeRoutesToAll="showFavoriteRoutesOrAllRoutesOfTaiwan"
+          @renewFavoriteRoutes="renewFavoriteRoutes"
           @renewPopMarker="renewPopMarker"
-          @resetNowDirection="nowDirection = 0"
+          @resetNowDirection="indexOfChosenDirection = 0"
         ></StopsListPanel>
       </div>
-      <!-- 顯示 指定路徑的 即時站牌資訊 結束 -->
+      <!-- 特定路線的即時站牌資訊 結束 -->
     </section>
+    <!-- 公車路線搜尋 或 所經站牌 結束 -->
+    <!-- 地圖 開始 -->
     <section class="w100 w60-md w70-lg h100">
       <Map
         class="w100 h100"
         mapId="homeMap"
         :mapCenter="mapCenter"
-        :stops="stops"
+        :stops="stopsOfChosenDirection"
         :routeGEOJSON="routeGEOJSON"
         :popMarker="popMarker"
       ></Map>
     </section>
+    <!-- 地圖 結束 -->
   </div>
 </template>
 <script>
@@ -204,34 +211,32 @@ import Map from "@/components/Map.vue";
 export default {
   data() {
     return {
-      routes: [],
-      allRoutes: [],
-      favoriteRoutes: [],
-      routesByKeywords: [],
-      allDirectionStopsOfTheRoute: [],
-      stopsOfTheRoute: [],
-      stops: [],
+      allRoutesOfTaiwan: [],
+      allRoutesOfFavorite: [],
+      currentRoutes: [],
+      currentRoutesFilterByKeywords: [],
+
+      allDirectionsOfTheChosenRoute: [],
+      indexOfChosenDirection: 0,
+      // chosenDirectionOfChosenRoute: this.allDirectionsOfTheChosenRoute[this.indexOfChosenDirection],
+      chosenDirectionOfChosenRoute: [],
+      stopsOfChosenDirection: [],
       mapCenter: { Lat: "22.997572", Lon: "120.196029" },
-      cityOfRoute: "",
+
       routeName: "",
-      vehicleOfTaiwan: [],
-      cityList: [],
-      vechile: "",
+      cities: [],
+
       routeGEOJSON: {},
+
       originalClientY: 0,
       nowClientY: 0,
       windowHeight: 0,
       originalBoardHeight: 0,
       newBoardHeight: 0,
-      touchInfoPanel: "",
-      showAlertOfNoFavoriteRoute: "",
-      intervalRenewStops: "",
-      RouteUID: "",
-      DepartureStopNameZh: "",
-      DestinationStopNameZh: "",
-      CityName: "",
-      savedInFavorite: "",
-      nowDirection: 0,
+      touchingInfoPanelOrNot: "",
+
+      signOfEmptyFavoriteRoute: "",
+
       nowPage: "home",
       popMarker: undefined,
     };
@@ -242,7 +247,7 @@ export default {
     "$route.query": {
       handler: function (query) {
         if (query.routes === "favorite" || Object.keys(query).length === 0) {
-          this.changeRoutesToFavoritesOrAll(query.routes === "favorite");
+          this.showFavoriteRoutesOrAllRoutesOfTaiwan();
         }
         this.nowPage =
           query.routes === "favorite"
@@ -255,7 +260,7 @@ export default {
     },
     routeName() {
       if (this.routeName === "" && this.$route.query.routes !== "favorite") {
-        this.routesByKeywords = [];
+        this.currentRoutesFilterByKeywords = [];
       } else {
         this.filterRouteByKeywords(this.routeName);
       }
@@ -264,13 +269,15 @@ export default {
   methods: {
     renewPopMarker(sequence) {
       if (sequence !== undefined) {
-        this.mapCenter.Lat = this.stops[sequence].StopPosition.PositionLat;
-        this.mapCenter.Lon = this.stops[sequence].StopPosition.PositionLon;
+        this.mapCenter.Lat =
+          this.stopsOfChosenDirection[sequence].StopPosition.PositionLat;
+        this.mapCenter.Lon =
+          this.stopsOfChosenDirection[sequence].StopPosition.PositionLon;
       }
       this.popMarker = sequence;
     },
-    renewFavoriteList(saveOrNot, routeUID) {
-      var renewRoute = this.routes.find((item) => {
+    renewFavoriteRoutes(saveOrNot, routeUID) {
+      var renewRoute = this.currentRoutes.find((item) => {
         return item.RouteUID === routeUID;
       });
       renewRoute.savedInFavorite = saveOrNot;
@@ -279,14 +286,11 @@ export default {
       document.getElementById(id).focus();
     },
     setOriginalClientY(e) {
-      console.log(e);
       this.originalClientY = e.touches ? e.touches[0].clientY : e.clientY;
-      // this.originalClientY = document.getElementById("infoPanel").offsetTop;
-      this.touchInfoPanel = true;
+      this.touchingInfoPanelOrNot = true;
     },
     changeTargetHeight(e) {
-      // this.originalClientY
-      if (this.touchInfoPanel) {
+      if (this.touchingInfoPanelOrNot) {
         this.nowClientY = e.changedTouches
           ? e.changedTouches[0].clientY
           : e.clientY;
@@ -301,59 +305,73 @@ export default {
             ? "200px"
             : this.newBoardHeight + "px";
         this.originalClientY = this.nowClientY;
-        // console.log(e.target.offsetHeight);
       }
     },
     changeDirectionForMap(dir) {
-      this.nowDirection = dir;
-      this.stopsOfTheRoute = this.allDirectionStopsOfTheRoute[dir];
-      this.stops = this.stopsOfTheRoute.Stops;
+      this.indexOfChosenDirection = dir;
+      this.chosenDirectionOfChosenRoute =
+        this.allDirectionsOfTheChosenRoute[dir];
+      this.stopsOfChosenDirection = this.chosenDirectionOfChosenRoute.Stops;
     },
     filterRouteByKeywords(routeName) {
-      this.routesByKeywords = [];
+      this.currentRoutesFilterByKeywords = [];
       let _this = this;
       let reg = new RegExp(routeName);
-      this.routes.forEach(function (route) {
+      this.currentRoutes.forEach(function (route) {
         if (
           reg.test(route.RouteName.Zh_tw + "*") ||
           reg.test(route.DepartureStopNameZh + "*") ||
           reg.test(route.DestinationStopNameZh + "*")
         ) {
-          _this.routesByKeywords.push(route);
+          _this.currentRoutesFilterByKeywords.push(route);
         }
       });
     },
-    async changeRoutesToFavoritesOrAll(changeToFavorites) {
-      this.routeName = "";
-      this.stopsOfTheRoute = [];
-      this.stops = [];
-      this.routeGEOJSON = "";
-
-      // 讀取最愛的站牌
-      var localRouteList = localStorage.getItem("favoriteRouteList");
-      this.favoriteRouteList = localRouteList ? JSON.parse(localRouteList) : [];
-
-      // this.$route.query.routes === "favorite"
-      if (changeToFavorites) {
-        this.routes = this.favoriteRouteList;
-        this.routesByKeywords = this.favoriteRouteList;
-        this.showAlertOfNoFavoriteRoute =
-          this.favoriteRouteList.length === 0 ? "還沒有收藏的站牌YO" : "";
+    showFavoriteRoutesOrAllRoutesOfTaiwan() {
+      this.deselectChosenRoute();
+      this.saveFavoriteRoutesFromLocalStorage();
+      if (this.$route.query.routes === "favorite") {
+          this.setCurrentRoutesWith({routes:this.allRoutesOfFavorite,routesFilterByKeywords:this.allRoutesOfFavorite})
       } else {
-        this.routes = this.allRoutes;
-        this.showAlertOfNoFavoriteRoute = "";
-        this.routesByKeywords = [];
+        this.setCurrentRoutesWith({routes:this.allRoutesOfTaiwan})
       }
     },
-    async setRouteCityAndNameForGetStops(
-      cityOfRoute,
-      routeName,
-      RouteUID,
-      DepartureStopNameZh,
-      DestinationStopNameZh,
-      CityName,
-      savedInFavorite
-    ) {
+    deselectChosenRoute(){
+      this.routeName = "";
+      this.chosenDirectionOfChosenRoute = [];
+      this.stopsOfChosenDirection = [];
+      this.routeGEOJSON = "";
+    },
+    async saveFavoriteRoutesFromLocalStorage(){
+      var localRouteList = localStorage.getItem("favoriteRouteList");
+      this.allRoutesOfFavorite = localRouteList
+        ? JSON.parse(localRouteList)
+        : [];
+
+      this.allRoutesOfFavorite.forEach((favoriteRoute) => {
+        let sameRoute = this.allRoutesOfTaiwan.filter((route)=>{
+          return route.RouteUID === favoriteRoute.RouteUID
+        })
+        if (sameRoute[0]) {
+          sameRoute[0].savedInFavorite = true
+        }
+      })
+    },
+    setCurrentRoutesWith({routes=this.allRoutesOfTaiwan,routesFilterByKeywords=[]}){
+      this.currentRoutes = routes;
+        this.currentRoutesFilterByKeywords = routesFilterByKeywords;
+        this.signOfEmptyFavoriteRoute =
+          routes.length === 0 ? "還沒有收藏的站牌YO" : "";
+    },
+    async getStopsOfRoute({
+      cityOfRoute = this.$route.query.cityOfRoute,
+      routeName = this.$route.query.routeName,
+      RouteUID = this.$route.query.RouteUID,
+      DepartureStopNameZh = this.$route.query.DepartureStopNameZh,
+      DestinationStopNameZh = this.$route.query.DestinationStopNameZh,
+      CityName = this.$route.query.CityName,
+      savedInFavorite,
+    }) {
       this.$router.replace({
         query: {
           cityOfRoute: cityOfRoute,
@@ -364,89 +382,67 @@ export default {
           CityName: CityName,
         },
       });
-
-      this.cityOfRoute = cityOfRoute;
       this.routeName = routeName;
-      this.RouteUID = RouteUID;
-      this.DepartureStopNameZh = DepartureStopNameZh;
-      this.DestinationStopNameZh = DestinationStopNameZh;
-      this.CityName = CityName;
-      this.savedInFavorite = savedInFavorite;
       let _this = this;
 
       // 取得去程與返程分別所經站牌
-      this.allDirectionStopsOfTheRoute =
+      this.allDirectionsOfTheChosenRoute =
         await _this.sortRealTimeNearStopAndEstimatedTimeByStopsOfTheRoute(
-          this.vehicleOfTaiwan,
+          await this.getVehicleOfTaiwan(this.cities),
           cityOfRoute,
           routeName,
           RouteUID
         );
       // 將該路線的起迄點名稱，分別記到去程（direction 0）與回程（direction 1）資料中
-      await _this.allDirectionStopsOfTheRoute.forEach((direction) => {
+      await _this.allDirectionsOfTheChosenRoute.forEach((direction) => {
         direction.DepartureStopNameZh = DepartureStopNameZh;
         direction.DestinationStopNameZh = DestinationStopNameZh;
         direction.CityName = CityName;
         direction.savedInFavorite = savedInFavorite;
       });
-      // 以 nowDirection (可能是去程 direction 0，或返程 direction 1）作為所經過站牌為初始站牌資料
-      _this.stopsOfTheRoute = await _this.allDirectionStopsOfTheRoute[
-        _this.nowDirection
-      ];
+      // 以 indexOfChosenDirection (可能是去程 direction 0，或返程 direction 1）作為所經過站牌為初始站牌資料
+      _this.chosenDirectionOfChosenRoute = await _this
+        .allDirectionsOfTheChosenRoute[_this.indexOfChosenDirection];
 
       // 取得路徑圖資
       this.routeGEOJSON = await this.getRouteGEOJSON(cityOfRoute, RouteUID);
 
-      _this.stops = _this.stopsOfTheRoute.Stops;
-      let mapCenterSequence =
+      _this.stopsOfChosenDirection = _this.chosenDirectionOfChosenRoute.Stops;
+      let sequenceForCenterMap =
         this.popMarker === undefined
-          ? parseInt(_this.stops.length / 2)
+          ? parseInt(_this.stopsOfChosenDirection.length / 2)
           : this.popMarker;
       _this.mapCenter.Lat =
-        _this.stops[mapCenterSequence].StopPosition.PositionLat;
+        _this.stopsOfChosenDirection[
+          sequenceForCenterMap
+        ].StopPosition.PositionLat;
       _this.mapCenter.Lon =
-        _this.stops[mapCenterSequence].StopPosition.PositionLon;
-      // console.log("_this.mapCenter", _this.mapCenter);
+        _this.stopsOfChosenDirection[
+          sequenceForCenterMap
+        ].StopPosition.PositionLon;
+    },
+    showStopsOfSpecificRouteOrNot() {
+      return (
+        this.$route.query.cityOfRoute &&
+        this.$route.query.routeName &&
+        this.$route.query.RouteUID &&
+        this.$route.query.DepartureStopNameZh &&
+        this.$route.query.DestinationStopNameZh &&
+        this.$route.query.CityName
+      );
     },
   },
   async mounted() {
-    // this.windowHeight = window.innerHeight;
     this.windowHeight = document.getElementById("infoPanel").offsetHeight / 0.9;
   },
   async created() {
-    var _this = this;
-    (async function () {
-      _this.cityList = await _this.getCityList();
-      _this.allRoutes = await _this.getRoutesOfTaiwan(await _this.cityList);
-      // route list
-      _this.changeRoutesToFavoritesOrAll(
-        _this.$route.query.routes === "favorite"
-      );
-      _this.vehicleOfTaiwan = await _this.getVehicleOfTaiwan(
-        await _this.cityList
-      );
-      if (
-        _this.$route.query.cityOfRoute &&
-        _this.$route.query.routeName &&
-        _this.$route.query.RouteUID &&
-        _this.$route.query.DepartureStopNameZh &&
-        _this.$route.query.DestinationStopNameZh &&
-        _this.$route.query.CityName
-      ) {
-        _this.setRouteCityAndNameForGetStops(
-          _this.$route.query.cityOfRoute,
-          _this.$route.query.routeName,
-          _this.$route.query.RouteUID,
-          _this.$route.query.DepartureStopNameZh,
-          _this.$route.query.DestinationStopNameZh,
-          _this.$route.query.CityName
-        );
-      }
-    })();
-    // console.log(this.$route.query);
+    this.cities = await this.getCityList();
+    this.allRoutesOfTaiwan = await this.getRoutesOfTaiwan(this.cities);
+    this.showFavoriteRoutesOrAllRoutesOfTaiwan();
+
+    if (this.showStopsOfSpecificRouteOrNot()) {
+      this.getStopsOfRoute({});
+    }
   },
 };
 </script>
-<style lang="scss">
-// @import "@/assets/style/scss/_main.scss";
-</style>
