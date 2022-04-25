@@ -49,11 +49,7 @@ export default {
         "favoriteRouteList",
         JSON.stringify(favoriteRouteList)
       );
-      // console.log(JSON.parse(localStorage.getItem("favoriteRouteList")));
     },
   },
 };
 </script>
-
-<style>
-</style>

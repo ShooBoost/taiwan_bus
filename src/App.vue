@@ -70,22 +70,6 @@
     </footer>
   </div>
 </template>
-
-<style lang="scss">
-@import "@/assets/style/scss/_main.scss";
-
-html,
-body,
-#app {
-  height: 100%;
-  max-height: -webkit-fill-available;
-}
-header,
-footer {
-  // useless cause flex is working well
-  // height: 200px;
-}
-</style>
 <script>
 export default {
   data() {
@@ -147,3 +131,13 @@ export default {
   created() {},
 };
 </script>
+
+<style lang="scss">
+@import "@/assets/style/scss/_main.scss";
+html,
+body,
+#app {
+  height: 100%;
+  max-height: -webkit-fill-available;
+}
+</style>

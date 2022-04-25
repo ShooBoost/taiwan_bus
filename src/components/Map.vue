@@ -60,14 +60,7 @@ export default {
     },
     mapCenter: {
       handler: function () {
-        // console.log(
-        //   "[this.mapCenter.Lat, this.mapCenter.Lon]",
-        //   [this.mapCenter.Lat, this.mapCenter.Lon],
-        //   11,
-        //   { animate: true }
-        // );
         this.map.panTo([this.mapCenter.Lat, this.mapCenter.Lon]);
-        // this.map.setView([this.mapCenter.Lat, this.mapCenter.Lon], 11, { animate: true })
       },
       deep: true,
     },
@@ -113,28 +106,6 @@ export default {
         // draggable: true,
       });
     },
-    // showSpotOnMap(mapId, lat, lon) {
-    //   // 客製化 icon，可以自己設計 html
-    //   var myIcon = L.divIcon({
-    //     // 客製化 icon
-    //     html: `<div class="locationIcon"></div>`,
-    //     // 給定 icon 大小
-    //     iconSize: [41, 51], // size of the icon
-    //     iconAnchor: [20, 51], // point of the icon which will correspond to marker's location
-    //     popupAnchor: [0, -51], // point from which the popup should open relative to the iconAnchor
-    //   });
-
-    //   // 讓 marker 使用我們設計的 客製化 icon
-    //   // 並在指定經緯度放上客製化的 marker
-    //   L.marker([lat, lon], {
-    //     icon: myIcon,
-    //     clickable: true,
-    //     draggable: true,
-    //   }).addTo(this.map);
-
-    //   //  this.map.addLayer(L.marker([lat, lon], { icon: myIcon, clickable: true,
-    //   //  draggable: true }))
-    // },
     showRouteOnMap(geoJSON) {
       // 先移除路徑圖資
       this.map.removeLayer(this.geolayerGroup);
@@ -153,25 +124,6 @@ export default {
   mounted() {
     // 先初始化將 leaflet 撲到畫面上
     this.initalLeafletMap(this.mapId, this.mapCenter.Lat, this.mapCenter.Lon);
-
-    // 應該換成定位使用者所在地
-    // this.showSpotOnMap(this.mapId, this.mapCenter.Lat, this.mapCenter.Lon);
   },
 };
 </script>
-<style lang="scss">
-@import "@/assets/style/scss/_main.scss";
-.locationIcon {
-  // background-color: $color-primary;
-  width: 20px;
-  height: 20px;
-  border-radius: 100%;
-  border: 3px solid rgb(255, 255, 255);
-  font-size: 14px;
-  font-weight: bolder;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: rgb(255, 255, 255);
-}
-</style>

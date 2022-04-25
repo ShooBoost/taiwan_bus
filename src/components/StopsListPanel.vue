@@ -185,17 +185,12 @@ export default {
       if (prePage === "favorite") {
         this.$router.replace({ query: { routes: "favorite" } });
       } else {
-        // this.$router.push({ path: "/" });
         this.$router.replace({ path: "/" });
       }
       this.$emit("changeRoutesToAll");
     },
   },
   mounted() {
-    // console.log(
-    //   "stopPanel allDirectionsOfTheChosenRoute",
-    //   this.allDirectionsOfTheChosenRoute
-    // );
     console.log("prePage", this.prePage);
     var _this = this;
     var timeBarWidth = document.getElementById("timeBar").clientWidth;
@@ -232,4 +227,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
