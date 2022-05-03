@@ -29,10 +29,6 @@ export default {
       let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
       let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
 
-      // let AppID = "shooboost-0659506a-9440-4f49";
-      // let AppKey = "f075a3b1-3567-47d5-9926-e413ba6d3d42";
-
-
       let GMTString = new Date().toGMTString();
       let ShaObj = new jsSHA("SHA-1", "TEXT");
       ShaObj.setHMACKey(AppKey, "TEXT");
