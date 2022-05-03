@@ -3,7 +3,21 @@
     <!-- 公車路線搜尋 或 所經站牌 開始 -->
     <section
       id="infoPanel"
-      class="w100 w40-md w30-lg h90 h100-md pos-absolute pos-relative-md b0 z-index9999 bg-color-white flex flex-direction-column border-rounded-top-24 border-rounded-none-md pt68-md border-box"
+      class="
+        w100
+        w40-md
+        w30-lg
+        h90
+        h100-md
+        pos-absolute pos-relative-md
+        b0
+        z-index9999
+        bg-color-white
+        flex flex-direction-column
+        border-rounded-top-24 border-rounded-none-md
+        pt68-md
+        border-box
+      "
     >
       <!-- mobile 版才有的觸控調整 infoPanel 大小 開始 -->
       <div
@@ -13,7 +27,14 @@
         @mousedown.prevent.self="setOriginalClientY"
         @mousemove.prevent.self="changeTargetHeight"
         @mouseup.prevent="touchingInfoPanelOrNot = false"
-        class="py12 text-center material-icons-round fw-bold cursor-pointer display-none-md"
+        class="
+          py12
+          text-center
+          material-icons-round
+          fw-bold
+          cursor-pointer
+          display-none-md
+        "
       >
         horizontal_rule
       </div>
@@ -27,7 +48,15 @@
         <div class="px32">
           <input
             id="inputOfSearchRoute"
-            class="w100 border-box mb20 bg-color-grey300 border-none p12 border-rounded-10-md"
+            class="
+              w100
+              border-box
+              mb20
+              bg-color-grey300
+              border-none
+              p12
+              border-rounded-10-md
+            "
             v-model="routeName"
             placeholder="🔍"
           />
@@ -43,31 +72,70 @@
         <div class="w100 py12 px22 border-box fz20">
           <div class="w100 gap10 flex jc-space-around mb10">
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-red color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-red
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '紅'"
             >
               紅
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-blue color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-blue
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '藍'"
             >
               藍
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '1'"
             >
               1
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '2'"
             >
               2
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '3'"
             >
               3
@@ -75,31 +143,70 @@
           </div>
           <div class="w100 gap10 flex jc-space-around mb10">
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-green color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-green
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '綠'"
             >
               綠
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-brown color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-brown
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '棕'"
             >
               棕
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '4'"
             >
               4
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '5'"
             >
               5
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '6'"
             >
               6
@@ -107,31 +214,70 @@
           </div>
           <div class="w100 gap10 flex jc-space-around mb10">
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-orange color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-orange
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '橘'"
             >
               橘
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-yellow color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-yellow
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '黃'"
             >
               黃
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '7'"
             >
               7
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '8'"
             >
               8
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '9'"
             >
               9
@@ -139,31 +285,71 @@
           </div>
           <div class="w100 gap10 flex jc-space-around">
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey600 color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey600
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + 'F'"
             >
               F
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey600 color-white fw-bold cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey600
+                color-white
+                fw-bold
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '小'"
             >
               小
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-kb-black color-white cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-kb-black
+                color-white
+                cursor-pointer
+              "
               @click="focusInput('inputOfSearchRoute')"
             >
               其他
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString() + '0'"
             >
               0
             </div>
             <div
-              class="py12 border-rounded w100 text-center bg-color-grey500 cursor-pointer"
+              class="
+                py12
+                border-rounded
+                w100
+                text-center
+                bg-color-grey500
+                cursor-pointer
+              "
               @click="routeName = routeName.toString().slice(0, -1)"
             >
               清除
@@ -204,6 +390,7 @@
   </div>
 </template>
 <script>
+// import axios from "axios";
 import getTdxData from "@/mixins/getTdxData";
 import RouteSearchPanel from "@/components/RouteSearchPanel.vue";
 import StopsListPanel from "@/components/StopsListPanel.vue";
@@ -331,37 +518,43 @@ export default {
       this.deselectChosenRoute();
       this.saveFavoriteRoutesFromLocalStorage();
       if (this.$route.query.routes === "favorite") {
-          this.setCurrentRoutesWith({routes:this.allRoutesOfFavorite,routesFilterByKeywords:this.allRoutesOfFavorite})
+        this.setCurrentRoutesWith({
+          routes: this.allRoutesOfFavorite,
+          routesFilterByKeywords: this.allRoutesOfFavorite,
+        });
       } else {
-        this.setCurrentRoutesWith({routes:this.allRoutesOfTaiwan})
+        this.setCurrentRoutesWith({ routes: this.allRoutesOfTaiwan });
       }
     },
-    deselectChosenRoute(){
+    deselectChosenRoute() {
       this.routeName = "";
       this.chosenDirectionOfChosenRoute = [];
       this.stopsOfChosenDirection = [];
       this.routeGEOJSON = "";
     },
-    async saveFavoriteRoutesFromLocalStorage(){
+    async saveFavoriteRoutesFromLocalStorage() {
       var localRouteList = localStorage.getItem("favoriteRouteList");
       this.allRoutesOfFavorite = localRouteList
         ? JSON.parse(localRouteList)
         : [];
 
       this.allRoutesOfFavorite.forEach((favoriteRoute) => {
-        let sameRoute = this.allRoutesOfTaiwan.filter((route)=>{
-          return route.RouteUID === favoriteRoute.RouteUID
-        })
+        let sameRoute = this.allRoutesOfTaiwan.filter((route) => {
+          return route.RouteUID === favoriteRoute.RouteUID;
+        });
         if (sameRoute[0]) {
-          sameRoute[0].savedInFavorite = true
+          sameRoute[0].savedInFavorite = true;
         }
-      })
+      });
     },
-    setCurrentRoutesWith({routes=this.allRoutesOfTaiwan,routesFilterByKeywords=[]}){
+    setCurrentRoutesWith({
+      routes = this.allRoutesOfTaiwan,
+      routesFilterByKeywords = [],
+    }) {
       this.currentRoutes = routes;
-        this.currentRoutesFilterByKeywords = routesFilterByKeywords;
-        this.signOfEmptyFavoriteRoute =
-          routes.length === 0 ? "還沒有收藏的站牌YO" : "";
+      this.currentRoutesFilterByKeywords = routesFilterByKeywords;
+      this.signOfEmptyFavoriteRoute =
+        routes.length === 0 ? "還沒有收藏的站牌YO" : "";
     },
     async getStopsOfRoute({
       cityOfRoute = this.$route.query.cityOfRoute,

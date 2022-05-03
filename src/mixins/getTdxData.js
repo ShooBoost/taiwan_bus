@@ -10,13 +10,14 @@ export default {
   methods: {
     // 取得 台灣所有縣市的名稱
     async getCityList() {
-      var apiUrl =
-        "https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON";
+      // var apiUrl =
+      //   "https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON";
+      var apiUrl = "https://gist.transportdata.tw/gist_api/V3/Map/Basic/City?$format=JSON";
       try {
         let res = await axios.get(apiUrl, {
           headers: this.getAuthorizationHeader(),
         });
-        // console.log("getCityList 拿到 tdx data 啦", apiUrl, res.data);
+        console.log("getCityList 拿到 tdx data 啦", apiUrl, res.data);
         return await res.data;
       } catch (err) {
         console.log(err);
@@ -25,10 +26,12 @@ export default {
 
     // 生成 api header
     getAuthorizationHeader() {
-      //  填入自己 ID、KEY 開始
       let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
       let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
-      //  填入自己 ID、KEY 結束
+
+      // let AppID = "shooboost-0659506a-9440-4f49";
+      // let AppKey = "f075a3b1-3567-47d5-9926-e413ba6d3d42";
+
 
       let GMTString = new Date().toGMTString();
       let ShaObj = new jsSHA("SHA-1", "TEXT");
