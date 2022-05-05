@@ -1,49 +1,55 @@
-import jsSHA from "jssha";
+import qs from "qs";
 import axios from "axios";
 
 export default {
   data() {
     return {
-      allcitiesInTaiwan: [],
     };
   },
   methods: {
     // 取得 台灣所有縣市的名稱
     async getCityList() {
-      // var apiUrl =
-      //   "https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON";
-      var apiUrl = "https://gist.transportdata.tw/gist_api/V3/Map/Basic/City?$format=JSON";
+      var apiUrl = "https://tdx.transportdata.tw/api/basic/v2/Basic/City?%24format=JSON";
       try {
         let res = await axios.get(apiUrl, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
-        console.log("getCityList 拿到 tdx data 啦", apiUrl, res.data);
+        // console.log("getCityList 拿到 tdx data 啦", apiUrl, res.data);
         return await res.data;
       } catch (err) {
-        console.log(err);
+        console.log('台灣所有縣市的名稱',err);
       }
     },
-
-    // 生成 api header
-    getAuthorizationHeader() {
-      let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
-      let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
-
-      let GMTString = new Date().toGMTString();
-      let ShaObj = new jsSHA("SHA-1", "TEXT");
-      ShaObj.setHMACKey(AppKey, "TEXT");
-      ShaObj.update("x-date: " + GMTString);
-      let HMAC = ShaObj.getHMAC("B64");
-      let Authorization = `hmac username="${AppID}",algorithm="hmac-sha1",headers="x-date",signature="${HMAC}"`;
-      return { Authorization: Authorization, "X-Date": GMTString };
+    async getAuthorizationHeader() {
+      const parameter = {
+        grant_type: "client_credentials",
+        client_id: "shooboost-0659506a-9440-4f49",
+        client_secret: "f075a3b1-3567-47d5-9926-e413ba6d3d42",
+      };
+      let auth_url = `https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token`;
+      try {
+        let res = await axios({
+          method: "POST",
+          url: auth_url,
+          data: qs.stringify(parameter),
+          headers: { "content-type": "application/x-www-form-urlencoded" },
+        });
+        let accesstoken = res.data;
+        return {
+          authorization: `Bearer ${accesstoken.access_token}`,
+        }
+      } catch (err) {
+        return err;
+      }
     },
 
     // 取得 指定縣市之公車路線
     async getRoutesOfTheCity(cityName, cityNameInChinese) {
-      var apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${cityName}?$format=JSON`;
+      // var apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${cityName}?$format=JSON`;
+      var apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Bus/Route/City/${cityName}?$format=JSON`;
       try {
         let res = await axios.get(`${apiUrl}`, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // _this.tdxData = res.data;
         // console.log("getRoutesOfTheCity 拿到 tdx data 啦", apiUrl, res.data);
@@ -76,16 +82,18 @@ export default {
       let routesList = [];
       // 使用 map 搭配 for loop
       // map 儲存各個縣市的公車路線清單
-      let routesOfAllCities = await allCityList.map(async (city) => {
-        let routesOfCity = await this.getRoutesOfTheCity(city.City, city.CityName);
-        return routesOfCity;
-      });
+      let routesOfAllCities = [];
+      for(let city of allCityList){
+          routesOfAllCities.push(await this.getRoutesOfTheCity(city.City, city.CityName))
+      }
+
       // for loop 將各縣市路線清單合併(concat)為一個清單
       // 例如 [[北市路線666, 北市路線661],[宜蘭路線6],[台中路線02,台中路線50]] concat 成 [北市路線666, 北市路線661, 宜蘭路線6, 台中路線02,台中路線50]
       for (let routesOfCity of routesOfAllCities) {
         routesList = routesList.concat(await routesOfCity);
       }
-      console.log("routesList", await routesList);
+      routesList.sort((a, b) =>{return a.RouteName.Zh_tw.localeCompare(b.RouteName.Zh_tw, "zh-TW")})
+      // console.log("routesList", await routesList);
       return await routesList;
     },
 
@@ -102,10 +110,10 @@ export default {
         "SubRouteUID",
       ];
       let selectDetailString = selectDetailList.join("%2C");
-      var apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeNearStop/City/${cityName}/${RouteName}?$select=${selectDetailString}&$format=JSON`;
+      var apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Bus/RealTimeNearStop/City/${cityName}/${RouteName}?$select=${selectDetailString}&$format=JSON`;
       try {
         let res = await axios.get(`${apiUrl}`, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // console.log(
         //   "getVehicleNearStopOfTheRoute 拿到 tdx data 啦",
@@ -120,10 +128,10 @@ export default {
 
     // 取得該縣市的所有 無障礙公車 公車車牌
     async getVehicleOfTheCity(cityName) {
-      var apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/Vehicle/City/${cityName}?$filter=VehicleType%20eq%201&$format=JSON/`;
+      var apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Bus/Vehicle/City/${cityName}?$filter=VehicleType%20eq%201&$format=JSON/`;
       try {
         let res = await axios.get(`${apiUrl}`, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // console.log("getVehicleOfTheCity 拿到 tdx data 啦", apiUrl, res.data);
         return await res.data;
@@ -135,12 +143,13 @@ export default {
     // 取得全台 公車車牌、該車牌是否為無障礙公車
     async getVehicleOfTaiwan(allCityList) {
       let vehicleList = [];
-      // 使用 map 搭配 for loop
-      // map 儲存各個縣市的公車路線清單
-      let vehicleOfAllCities = await allCityList.map(async (city) => {
-        let vehicleOfCity = await this.getVehicleOfTheCity(city.City);
-        return vehicleOfCity;
-      });
+        let vehicleOfAllCities = [];
+        for(let city of allCityList){
+          if(city.City === 'Chiayi'){continue}
+          // console.log(city)
+          vehicleOfAllCities.push(await this.getVehicleOfTheCity(city.City))
+        }
+
       // for loop 將各縣市路線清單合併(concat)為一個清單
       // 例如 [[北市路線666, 北市路線661],[宜蘭路線6],[台中路線02,台中路線50]] concat 成 [北市路線666, 北市路線661, 宜蘭路線6, 台中路線02,台中路線50]
       for (let vehicleOfCity of vehicleOfAllCities) {
@@ -150,11 +159,11 @@ export default {
     },
 
     // 取得 特定公車路線的路徑圖資
-    async getRouteGEOJSON(city, routeUID) {
-      let apiUrl = `https://gist.motc.gov.tw/gist_api/V3/Map/Bus/Network/Route/City/${city}?$filter=RouteUID%20eq%20'${routeUID}'&$format=GEOJSON`;
+    async getRouteGEOJSON(city, routeName) {
+      let apiUrl = `https://tdx.transportdata.tw/api/basic/V3/Map/Bus/Network/StopOfRoute/City/${city}/RouteName/${routeName}?%24format=GEOJSON`
       try {
         let res = await axios.get(`${apiUrl}`, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // console.log("getRouteGEOJSON 拿到 tdx data 啦", apiUrl, res.data)
         return res.data.features[0]
@@ -165,10 +174,10 @@ export default {
 
     // 取得 特定公車路線的行經站牌
     async getStopsOfTheRoute(cityName, RouteName, RouteUID) {
-      let apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/${cityName}/${RouteName}?$filter=RouteUID%20%20eq%20'${RouteUID}'&$format=JSON`;
+      let apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Bus/StopOfRoute/City/${cityName}/${RouteName}?$filter=RouteUID%20%20eq%20'${RouteUID}'&$format=JSON`;
       try {
         let res = await axios.get(apiUrl, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // console.log("getStopsOfTheRoute 拿到 tdx data 啦", apiUrl, res.data);
         // 去程與回程各自經過的站牌，依站序排列
@@ -192,19 +201,14 @@ export default {
         "PlateNumb",
       ];
       let selectDetailString = selectDetailList.join("%2C");
-      let apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${cityName}/${RouteName}?&select=${selectDetailString}&$format=JSON`;
+      let apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/${cityName}/${RouteName}?&select=${selectDetailString}&$format=JSON`;
       try {
         let res = await axios.get(apiUrl, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         res.data.sort((item, itemNext) => {
           return item.Direction - itemNext.Direction;
         });
-        // console.log(
-        //   "getdifferentDirectionsStopsEstimatedTimeLists 拿到 tdx data 啦",
-        //   apiUrl,
-        //   res.data
-        // );
         let direction0List = res.data.filter(function (item) {
           return item.Direction === 0;
         });
@@ -330,15 +334,11 @@ export default {
           });
         }
       }
-      console.log(
-        "differentDirectionsStopsLists",
-        differentDirectionsStopsLists
-      );
+      // console.log(
+      //   "differentDirectionsStopsLists",
+      //   differentDirectionsStopsLists
+      // );
       return differentDirectionsStopsLists;
     },
-  },
-  async created() {
-    this.allcitiesInTaiwan = await this.getCityList();
-    console.log("this.allcitiesInTaiwan", this.allcitiesInTaiwan)
   },
 };

@@ -191,7 +191,6 @@ export default {
     },
   },
   mounted() {
-    console.log("prePage", this.prePage);
     var _this = this;
     var timeBarWidth = document.getElementById("timeBar").clientWidth;
     var nowTimeBarWidth = timeBarWidth;
@@ -209,7 +208,6 @@ export default {
       });
 
       console.log("=========== NEW DATA +++++++++++++++ ");
-      console.log(timeBarWidth, nowTimeBarWidth);
     }, 10000);
     this.timeBarInterval = setInterval(function () {
       nowTimeBarWidth -= timeBarWidth / 10;

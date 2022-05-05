@@ -390,6 +390,7 @@
   </div>
 </template>
 <script>
+// import qs from "qs";
 // import axios from "axios";
 import getTdxData from "@/mixins/getTdxData";
 import RouteSearchPanel from "@/components/RouteSearchPanel.vue";
@@ -455,7 +456,7 @@ export default {
   },
   methods: {
     renewPopMarker(sequence) {
-      if (sequence !== undefined) {
+      if (sequence !== undefined && this.stopsOfChosenDirection[sequence]) {
         this.mapCenter.Lat =
           this.stopsOfChosenDirection[sequence].StopPosition.PositionLat;
         this.mapCenter.Lon =
@@ -506,9 +507,7 @@ export default {
       let reg = new RegExp(routeName);
       this.currentRoutes.forEach(function (route) {
         if (
-          reg.test(route.RouteName.Zh_tw + "*") ||
-          reg.test(route.DepartureStopNameZh + "*") ||
-          reg.test(route.DestinationStopNameZh + "*")
+          reg.test(route.RouteName.Zh_tw + "*")
         ) {
           _this.currentRoutesFilterByKeywords.push(route);
         }
@@ -598,7 +597,7 @@ export default {
         .allDirectionsOfTheChosenRoute[_this.indexOfChosenDirection];
 
       // 取得路徑圖資
-      this.routeGEOJSON = await this.getRouteGEOJSON(cityOfRoute, RouteUID);
+      this.routeGEOJSON = await this.getRouteGEOJSON(cityOfRoute, routeName);
 
       _this.stopsOfChosenDirection = _this.chosenDirectionOfChosenRoute.Stops;
       let sequenceForCenterMap =
@@ -625,12 +624,53 @@ export default {
       );
     },
   },
-  async mounted() {
+  mounted() {
     this.windowHeight = document.getElementById("infoPanel").offsetHeight / 0.9;
+
+    // async function GetAuthorizationHeader() {
+    //   const parameter = {
+    //     grant_type: "client_credentials",
+    //     client_id: "shooboost-0659506a-9440-4f49",
+    //     client_secret: "f075a3b1-3567-47d5-9926-e413ba6d3d42",
+    //   };
+    //   let auth_url = `https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token`;
+    //   try {
+    //     let res = await axios({
+    //       method: "POST",
+    //       url: auth_url,
+    //       data: qs.stringify(parameter),
+    //       headers: { "content-type": "application/x-www-form-urlencoded" },
+    //     });
+    //     return res.data;
+    //   } catch (err) {
+    //     return err;
+    //   }
+    // }
+
+    // async function GetApiResponse() {
+    //   let accesstoken = await GetAuthorizationHeader();
+    //   let apiUrl =
+    //     "https://tdx.transportdata.tw/api/basic/v2/Basic/City?%24format=JSON";
+    //   try {
+    //     let res = await axios({
+    //       method: "GET",
+    //       url: apiUrl,
+    //       headers: {
+    //         authorization: `Bearer ${accesstoken.access_token}`,
+    //       },
+    //     });
+    //     console.log("CIIIIITY", await res);
+    //     return await res;
+    //   } catch (err) {
+    //     console.log("EEEERRRRRRR GET", err);
+    //   }
+    // }
+    // GetApiResponse();
   },
   async created() {
     this.cities = await this.getCityList();
     this.allRoutesOfTaiwan = await this.getRoutesOfTaiwan(this.cities);
+    // this.allRoutesOfTaiwan = await this.getRoutesOfTheCity("Taipei", "臺北市");
     this.showFavoriteRoutesOrAllRoutesOfTaiwan();
 
     if (this.showStopsOfSpecificRouteOrNot()) {

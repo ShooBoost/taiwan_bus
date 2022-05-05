@@ -22,13 +22,13 @@ export default {
 
   watch: {
     popMarker(popMarker) {
-      if (popMarker !== undefined) {
+      if (popMarker !== undefined && this.markers[popMarker]) {
         this.markers[popMarker].openPopup();
       }
     },
     routeGEOJSON() {
       this.showRouteOnMap(this.routeGEOJSON);
-      console.log(this.routeGEOJSON);
+      // console.log(this.routeGEOJSON);
     },
     stops() {
       this.layer.remove();
