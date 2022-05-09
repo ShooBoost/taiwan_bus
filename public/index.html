@@ -5,19 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>logo.svg">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round|Material+Icons+Outlined"
       rel="stylesheet">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- <title><%= htmlWebpackPlugin.options.title %></title> -->
+    <title>台灣公車</title>
+    <meta name="description"  content="台灣公車路線查詢，即時公車到站資訊、公車站牌、公車路線地圖。" />
+    <meta property="og:type" content="article" />
+<meta property="og:title" content="台灣公車" />
+<meta property="og:description" content="台灣公車路線查詢，即時公車到站資訊、公車站牌、公車路線地圖。" />
+<meta property="og:url" content="https://shooboost.github.io/taiwan_bus/" />
+<meta property="og:site_name" content="台灣公車" />
+<meta property="og:image" content="<%= BASE_URL %>taiwan_bus.jpg" />
   </head>
   <body>
-    <!-- <h3>取得憑證資料:</h3>
-    <div id="accesstoken" class="align-text-bottom">        
-    </div>
-
-    <h3>api 資料:</h3>
-    <div id="apireponse" class="align-text-bottom">        
-    </div> -->
 
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
@@ -25,61 +25,4 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
-  <!-- <script>
-    $(function () {
-      GetAuthorizationHeader();
-      
-      GetApiResponse();    
-  });
-  
-  function GetAuthorizationHeader() {    
-      const parameter = {
-          grant_type:"client_credentials",
-          client_id: "shooboost-0659506a-9440-4f49",
-          client_secret: "f075a3b1-3567-47d5-9926-e413ba6d3d42"
-      };
-      
-      let auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
-          
-      $.ajax({
-          type: "POST",
-          url: auth_url,
-          crossDomain:true,
-          dataType:'JSON',                
-          data: parameter,
-          async: false,       
-          success: function(data){            
-              $("#accesstoken").text(JSON.stringify(data));                            
-          },
-          error: function (xhr, textStatus, thrownError) {
-              
-          }
-      });          
-  }
-  
-  function GetApiResponse(){    
-      let accesstokenStr = $("#accesstoken").text();    
-  
-      let accesstoken = JSON.parse(accesstokenStr);    
-  
-      if(accesstoken !=undefined){
-          $.ajax({
-              type: 'GET',
-              url: 'https://gist.transportdata.tw/gist_api/V3/Map/Basic/City?$format=JSON',             
-              headers: {
-                  "authorization": "Bearer " + accesstoken.access_token,                
-                },            
-              async: false,
-              success: function (Data) {
-                  $('#apireponse').text(JSON.stringify(Data));                
-                  console.log('Data', Data);
-              },
-              error: function (xhr, textStatus, thrownError) {
-                  console.log('errorStatus:',textStatus);
-                  console.log('Error:',thrownError);
-              }
-          });
-      }
-  }
-  </script> -->
 </html>
