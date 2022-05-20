@@ -4,12 +4,11 @@
 <script>
 // 在地圖上顯示 TDX 資料
 import L from "leaflet";
-
-// 自製的 mixin
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "Map",
-  props: ["mapId", "mapCenter", "stops", "routeGEOJSON", "popMarker"],
+  props: ["mapId"],
   data() {
     return {
       map: {},
@@ -19,25 +18,32 @@ export default {
       geolayerGroup: {},
     };
   },
+  computed:{
+    ...mapState('stops', ["sequenceOfChosenStop"]),
+    ...mapState("routes", ["geoJsonOfChosenRoute"]),
+    ...mapGetters("stops", ["mapCenter", "stopsOfChosenDirection"])
+  },
 
   watch: {
-    popMarker(popMarker) {
-      if (popMarker !== undefined && this.markers[popMarker]) {
-        this.markers[popMarker].openPopup();
+    sequenceOfChosenStop(sequence) {
+      if (sequence !== undefined && this.markers[sequence]) {
+        this.markers[sequence].openPopup();
       }
     },
-    routeGEOJSON() {
-      this.showRouteOnMap(this.routeGEOJSON);
-      // console.log(this.routeGEOJSON);
+    geoJsonOfChosenRoute() {
+      this.showRouteOnMap(this.geoJsonOfChosenRoute);
+      // console.log(this.geoJsonOfChosenRoute);
     },
-    stops() {
+    stopsOfChosenDirection() {
       this.layer.remove();
       let markers = [];
-      this.stops.forEach((stop) => {
+      this.stopsOfChosenDirection.forEach((stop) => {
         let bgColorClass =
           stop.EstimateTime === "將進站" || stop.EstimateTime === "進站中"
             ? "bg-color-secondary"
-            : typeof(stop.EstimateTime) === 'number' ? "bg-color-primary" : "bg-color-grey550";
+            : typeof stop.EstimateTime === "number"
+            ? "bg-color-primary"
+            : "bg-color-grey550";
         let marker = this.newMarker(
           stop.StopSequence,
           stop.StopPosition.PositionLat,

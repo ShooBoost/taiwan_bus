@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="Object.keys(stopsOfTheRoute).length !== 0"
+    v-if="Object.keys(stopsOfChosenDirection).length !== 0"
     class="h100 flex flex-direction-column"
   >
     <!-- 返回搜尋與收藏站牌 - 開始 -->
@@ -9,7 +9,7 @@
         ❮ 返回搜尋
       </p>
       <FavoriteBtn
-        :route="stopsOfTheRoute"
+        :route="stopsOfChosenDirection"
         @saveToFavorite="saveToFavorite"
       ></FavoriteBtn>
     </div>
@@ -17,7 +17,7 @@
     <!-- 路線名稱 - 開始 -->
     <div class="mb24">
       <h3 class="text-center fz36 fw-bold">
-        {{ stopsOfTheRoute.RouteName.Zh_tw }}
+        {{ chosenDirection.RouteName.Zh_tw }}
       </h3>
     </div>
     <!-- 路線名稱 - 結束 -->
@@ -34,7 +34,7 @@
         <p>
           往
           <span class="fw-bold">{{
-            stopsOfTheRoute.DestinationStopNameZh
+            chosenDirection.DestinationStopNameZh
           }}</span>
         </p>
       </li>
@@ -48,17 +48,17 @@
       >
         <p>
           往
-          <span class="fw-bold">{{ stopsOfTheRoute.DepartureStopNameZh }}</span>
+          <span class="fw-bold">{{ chosenDirection.DepartureStopNameZh }}</span>
         </p>
       </li>
     </ul>
     <ul class="h100 overflow-scroll">
       <li
-        v-for="(stop, i) in stopsOfTheRoute.Stops"
+        v-for="(stop, i) in stopsOfChosenDirection"
         :key="i"
         class="pos-relative cursor-pointer hover-bg-grey"
-        @click="$emit('renewPopMarker', i)"
-        @mouseover="$emit('renewPopMarker', i)"
+        @click="setSequenceOfChosenStop(i)"
+        @mouseover="setSequenceOfChosenStop(i)"
       >
         <div class="px32 flex fz14 ai-center">
           <!-- {{ stop.StopSequence }} -->
@@ -130,7 +130,7 @@
           <span
             class="vechileProgressBar-after"
             :class="[
-              { 'visibility-hidden': i === stopsOfTheRoute.Stops.length - 1 },
+              { 'visibility-hidden': i === stopsOfChosenDirection.length - 1 },
             ]"
           ></span>
         </span>
@@ -143,43 +143,45 @@
 </template>
 <script>
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
       nowDirection: 0,
-      stopsOfTheRoute: this.allDirectionsOfTheChosenRoute[0] || [],
       direction0Active: true,
       updateDataInterval: {},
       timeBarInterval: {},
     };
   },
-  props: ["allDirectionsOfTheChosenRoute", "prePage"],
-  emit: [
-    "changeRoutesToAll",
-    "renewStopsOfRoute",
-    "renewFavoriteRoutes",
-    "renewPopMarker",
-    "resetNowDirection",
-  ],
-  components: { FavoriteBtn },
-  watch: {
-    allDirectionsOfTheChosenRoute() {
-      this.stopsOfTheRoute =
-        this.allDirectionsOfTheChosenRoute[this.nowDirection] || [];
-    },
+  computed: {
+    ...mapState("stops", [
+      "allDirectionsOfChosenRoute",
+      "sequenceOfChosenStop",
+    ]),
+    ...mapGetters("stops", ["stopsOfChosenDirection", "chosenDirection"]),
   },
+  props: ["prePage"],
+  emit: ["renewFavoriteRoutes"],
+  components: { FavoriteBtn },
   methods: {
+    ...mapMutations("stops", [
+      "setIndexOfChosenDirection",
+      "setSequenceOfChosenStop",
+    ]),
+    ...mapActions(["fetchAllDirectionsOfChosenRoute"]),
     changeDirection(dir) {
-      this.nowDirection = dir;
-      this.stopsOfTheRoute = this.allDirectionsOfTheChosenRoute[dir];
-      this.$emit("changeDirection", dir);
+      this.setIndexOfChosenDirection(dir);
       this.direction0Active = !this.direction0Active;
     },
     saveToFavorite(saveOrNot) {
-      this.allDirectionsOfTheChosenRoute.forEach((direction) => {
+      this.allDirectionsOfChosenRoute.forEach((direction) => {
         direction.savedInFavorite = saveOrNot;
       });
-      this.$emit("renewFavoriteRoutes", saveOrNot, this.stopsOfTheRoute.RouteUID);
+      this.$emit(
+        "renewFavoriteRoutes",
+        saveOrNot,
+        this.chosenDirection.RouteUID
+      );
     },
     backToHomeOrFavorite(prePage = "home") {
       if (prePage === "favorite") {
@@ -187,7 +189,6 @@ export default {
       } else {
         this.$router.replace({ path: "/" });
       }
-      this.$emit("changeRoutesToAll");
     },
   },
   mounted() {
@@ -197,15 +198,7 @@ export default {
     this.updateDataInterval = setInterval(function () {
       document.getElementById("timeBar").style.width = timeBarWidth + "px";
       nowTimeBarWidth = timeBarWidth + timeBarWidth / 30;
-      _this.$emit("renewStopsOfRoute", {
-        cityOfRoute: _this.stopsOfTheRoute.City,
-        routeName: _this.stopsOfTheRoute.RouteName.Zh_tw,
-        RouteUID: _this.stopsOfTheRoute.RouteUID,
-        DepartureStopNameZh: _this.stopsOfTheRoute.DepartureStopNameZh,
-        DestinationStopNameZh: _this.stopsOfTheRoute.DestinationStopNameZh,
-        CityName: _this.stopsOfTheRoute.CityName,
-        savedInFavorite: _this.stopsOfTheRoute.savedInFavorite,
-      });
+      _this.fetchAllDirectionsOfChosenRoute();
 
       console.log("=========== NEW DATA +++++++++++++++ ");
     }, 10000);
@@ -217,11 +210,11 @@ export default {
   beforeUnmount() {
     clearInterval(this.updateDataInterval);
     clearInterval(this.timeBarInterval);
+    this.setSequenceOfChosenStop(0);
     console.log("=========== NO DATA +++++++++++++++");
   },
   unmounted() {
-    this.$emit("renewPopMarker", undefined);
-    this.$emit("resetNowDirection");
+    this.setIndexOfChosenDirection(0);
   },
 };
 </script>

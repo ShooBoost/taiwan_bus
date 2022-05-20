@@ -2,10 +2,7 @@ import qs from "qs";
 import axios from "axios";
 
 export default {
-  data() {
-    return {};
-  },
-  methods: {
+
     // 取得 台灣所有縣市的名稱
     async getCityList() {
       var apiUrl =
@@ -346,5 +343,5 @@ export default {
       // );
       return differentDirectionsStopsLists;
     },
-  },
+
 };

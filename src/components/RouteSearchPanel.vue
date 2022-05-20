@@ -1,22 +1,12 @@
 <template>
-  <ul class="">
+  <ul>
     <li
       v-for="(item, i) in routesByKeywords"
       :key="i"
       class="px32 cursor-pointer hover-bg-grey"
     >
       <div
-        @click="
-          intervalRenewStops(
-            item.City,
-            item.RouteName.Zh_tw,
-            item.RouteUID,
-            item.DepartureStopNameZh,
-            item.DestinationStopNameZh,
-            item.CityName,
-            item.savedInFavorite
-          )
-        "
+        @click="showChosenRoutePage(item)"
         class="flex jc-space-between border-bottom border-color-grey py12"
       >
         <div class="">
@@ -39,34 +29,35 @@
   </ul>
 </template>
 <script>
-// import getTdxData from "@/mixins/getTdxData";
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "RouteSearchPanel",
   data() {
     return {};
   },
+  computed: {
+    ...mapState("routes", ["keywordsForSearchTheRoute"]),
+    ...mapGetters("routes", ["routesByKeywords"]),
+  },
   components: { FavoriteBtn },
-  props: ["routesByKeywords"],
-  emit: ["getStopsOfRoute"],
   methods: {
-    intervalRenewStops(
-      City,
-      RouteName,
-      RouteUID,
-      DepartureStopNameZh,
-      DestinationStopNameZh,
-      CityName,
-      savedInFavorite
-    ) {
-      this.$emit("getStopsOfRoute", {
-        cityOfRoute: City,
-        routeName: RouteName,
-        RouteUID: RouteUID,
-        DepartureStopNameZh: DepartureStopNameZh,
-        DestinationStopNameZh: DestinationStopNameZh,
-        CityName: CityName,
-        savedInFavorite: savedInFavorite,
+    ...mapMutations(["setChosenRoute"]),
+    ...mapActions(["fetchAllDirectionsOfChosenRoute"]),
+    ...mapActions("routes", ["fetchGeoJsonOfChosenRoute"]),
+    showChosenRoutePage(route) {
+      this.setChosenRoute(route);
+      this.fetchAllDirectionsOfChosenRoute();
+      this.fetchGeoJsonOfChosenRoute();
+      this.$router.replace({
+        query: {
+          cityOfRoute: route.City,
+          routeName: route.RouteName.Zh_tw,
+          RouteUID: route.RouteUID,
+          DepartureStopNameZh: route.DepartureStopNameZh,
+          DestinationStopNameZh: route.DestinationStopNameZh,
+          CityName: route.City,
+        },
       });
     },
   },

@@ -1,5 +1,8 @@
 <template>
-  <div @click.stop="saveToFavorite(!route.savedInFavorite, route)" class="cursor-pointer">
+  <div
+    @click.stop="saveToFavorite(!route.savedInFavorite, route)"
+    class="cursor-pointer"
+  >
     <span
       v-if="route.savedInFavorite"
       class="material-icons mb6 color-secondary"
@@ -18,13 +21,13 @@ export default {
   emit: ["saveToFavorite"],
   methods: {
     // 收藏到我的最愛
-    saveToFavorite(saveOrNot, route) {
+    saveToFavorite(isSave, route) {
       var localRouteList = localStorage.getItem("favoriteRouteList");
       var favoriteRouteList = localRouteList ? JSON.parse(localRouteList) : [];
-      route.savedInFavorite = saveOrNot ? true : false;
+      route.savedInFavorite = isSave ? true : false;
       // emit
-      this.$emit('saveToFavorite',saveOrNot);
-      if (saveOrNot) {
+      this.$emit("saveToFavorite", isSave);
+      if (isSave) {
         // 新增
         favoriteRouteList.push({
           City: route.City,
