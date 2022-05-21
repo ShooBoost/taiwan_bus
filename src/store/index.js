@@ -80,13 +80,18 @@ export default createStore({
           context.state.chosenRoute.DepartureStopNameZh;
         direction.DestinationStopNameZh =
           context.state.chosenRoute.DestinationStopNameZh;
-        direction.CityName = context.state.chosenRoute.CityName;
+        direction.CityName = context.state.chosenRoute.City;
         direction.savedInFavorite = context.state.chosenRoute.savedInFavorite;
       });
       context.commit(
         "setAllDirectionsOfChosenRoute",
         await allDirectionsOfChosenRoute
       );
+    },
+    fetchChosenRoute(context, payload) {
+      context.commit("setChosenRoute", payload);
+      context.dispatch("fetchAllDirectionsOfChosenRoute");
+      context.dispatch("routes/fetchGeoJsonOfChosenRoute");
     },
   },
   modules: {

@@ -272,6 +272,7 @@ export default {
       "fetchAllCitiesOfTaiwan",
       "fetchAllRoutesOfTaiwan",
       "fetchAllDirectionsOfChosenRoute",
+      "fetchChosenRoute",
     ]),
     renewFavoriteRoutes(saveOrNot, routeUID) {
       var renewRoute = this.routesOfCurrentPage.find((item) => {
@@ -340,14 +341,13 @@ export default {
         }
       });
     },
-    showStopsOfSpecificRouteOrNot() {
+    isStopsPage() {
       return (
-        this.$route.query.cityOfRoute &&
+        this.$route.query.City &&
         this.$route.query.routeName &&
         this.$route.query.RouteUID &&
         this.$route.query.DepartureStopNameZh &&
-        this.$route.query.DestinationStopNameZh &&
-        this.$route.query.CityName
+        this.$route.query.DestinationStopNameZh
       );
     },
   },
@@ -359,8 +359,14 @@ export default {
 
     this.showFavoriteRoutesOrAllRoutesOfTaiwan();
 
-    if (this.showStopsOfSpecificRouteOrNot()) {
-      this.getStopsOfRoute({});
+    if (this.isStopsPage()) {
+      this.fetchChosenRoute({
+        City: this.$route.query.City,
+        RouteName: { Zh_tw: this.$route.query.routeName },
+        RouteUID: this.$route.query.RouteUID,
+        DepartureStopNameZh: this.$route.query.DepartureStopNameZh,
+        DestinationStopNameZh: this.$route.query.DestinationStopNameZh,
+      });
     }
   },
 };

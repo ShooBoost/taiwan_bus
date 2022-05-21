@@ -43,20 +43,17 @@ export default {
   components: { FavoriteBtn },
   methods: {
     ...mapMutations(["setChosenRoute"]),
-    ...mapActions(["fetchAllDirectionsOfChosenRoute"]),
+    ...mapActions(["fetchChosenRoute", "fetchAllDirectionsOfChosenRoute"]),
     ...mapActions("routes", ["fetchGeoJsonOfChosenRoute"]),
     showChosenRoutePage(route) {
-      this.setChosenRoute(route);
-      this.fetchAllDirectionsOfChosenRoute();
-      this.fetchGeoJsonOfChosenRoute();
+      this.fetchChosenRoute(route);
       this.$router.replace({
         query: {
-          cityOfRoute: route.City,
           routeName: route.RouteName.Zh_tw,
           RouteUID: route.RouteUID,
           DepartureStopNameZh: route.DepartureStopNameZh,
           DestinationStopNameZh: route.DestinationStopNameZh,
-          CityName: route.City,
+          City: route.City,
         },
       });
     },
