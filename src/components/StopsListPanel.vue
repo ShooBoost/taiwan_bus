@@ -9,7 +9,7 @@
         ❮ 返回搜尋
       </p>
       <FavoriteBtn
-        :route="stopsOfChosenDirection"
+        :route="chosenRoute"
         @saveToFavorite="saveToFavorite"
       ></FavoriteBtn>
     </div>
@@ -154,6 +154,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["chosenRoute"]),
     ...mapState("stops", [
       "allDirectionsOfChosenRoute",
       "sequenceOfChosenStop",
@@ -164,6 +165,7 @@ export default {
   emit: ["renewFavoriteRoutes"],
   components: { FavoriteBtn },
   methods: {
+    ...mapMutations(["setAllRoutesOfFavorite","setAllRoutesOfTaiwan"]),
     ...mapMutations("stops", [
       "setIndexOfChosenDirection",
       "setSequenceOfChosenStop",
@@ -174,14 +176,17 @@ export default {
       this.direction0Active = !this.direction0Active;
     },
     saveToFavorite(saveOrNot) {
-      this.allDirectionsOfChosenRoute.forEach((direction) => {
-        direction.savedInFavorite = saveOrNot;
-      });
-      this.$emit(
-        "renewFavoriteRoutes",
-        saveOrNot,
-        this.chosenDirection.RouteUID
-      );
+      // this.allDirectionsOfChosenRoute.forEach((direction) => {
+      //   direction.savedInFavorite = saveOrNot;
+      // });
+      // this.$emit(
+      //   "renewFavoriteRoutes",
+      //   saveOrNot,
+      //   this.chosenDirection.RouteUID
+      // );
+      console.log(saveOrNot);
+      this.setAllRoutesOfFavorite();
+      this.setAllRoutesOfTaiwan();
     },
     backToHomeOrFavorite(prePage = "home") {
       if (prePage === "favorite") {

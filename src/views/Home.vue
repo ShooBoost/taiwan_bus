@@ -244,7 +244,7 @@ export default {
 
         this.showFavoriteRoutesOrAllRoutesOfTaiwan();
 
-        this.setAllRoutesOfTaiwanWithFavorite();
+        this.setAllRoutesOfTaiwan();
         this.nowPage =
           query.routes === "favorite"
             ? "favorite"
@@ -266,7 +266,7 @@ export default {
       "setGeoJsonOfChosenRoute",
     ]),
     ...mapMutations([
-      "setAllRoutesOfTaiwanWithFavorite",
+      "setAllRoutesOfTaiwan",
       "setTest",
       "setChosenRoute",
       "setAllDirectionsOfChosenRoute",

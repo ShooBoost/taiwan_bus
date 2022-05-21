@@ -20,7 +20,8 @@ const getters = {
       ? parseInt(getters.stopsOfChosenDirection.length / 2)
       : state.sequenceOfChosenStop;
   },
-  stopsOfChosenDirection(state, getters) {
+  stopsOfChosenDirection(state, getters, rootState) {
+    console.log(rootState.chosenRoute, getters.chosenDirection.Stops ? getters.chosenDirection.Stops : []);
     return getters.chosenDirection.Stops ? getters.chosenDirection.Stops : [];
   },
   chosenDirection(state, getters, rootState) {

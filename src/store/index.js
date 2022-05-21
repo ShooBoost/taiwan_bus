@@ -7,6 +7,7 @@ export default createStore({
   state: {
     allCitiesOfTaiwan: [],
     allRoutesOfTaiwan: [],
+    allRoutesOfTaiwanWithoutFavorite: [],
     allRoutesOfFavorite: [],
     chosenRoute: {},
     allDirectionsOfChosenRoute: [],
@@ -35,29 +36,19 @@ export default createStore({
     setAllCitiesOfTaiwan(state, payload) {
       state.allCitiesOfTaiwan = payload;
     },
-    setAllRoutesOfTaiwanWithFavorite(state) {
-      console.log(
-        "setAllRoutesOfTaiwanWithFavorite",
-        state.allRoutesOfFavorite
+    setAllRoutesOfTaiwanWithoutFavorite(state, payload) {
+      state.allRoutesOfTaiwanWithoutFavorite = payload;
+    },
+    setAllRoutesOfTaiwan(state) {
+      state.allRoutesOfTaiwan = JSON.parse(
+        JSON.stringify(state.allRoutesOfTaiwanWithoutFavorite)
       );
       state.allRoutesOfFavorite.forEach((favoriteRoute) => {
-        let sameRoute = state.allRoutesOfTaiwan.filter((route) => {
-          return route.RouteUID === favoriteRoute.RouteUID;
-        });
-        if (sameRoute[0]) {
-          sameRoute[0].savedInFavorite = true;
-        }
-        console.log(sameRoute);
-      });
-    },
-    setAllRoutesOfTaiwan(state, payload) {
-      state.allRoutesOfTaiwan = payload;
-      state.allRoutesOfFavorite.forEach((favoriteRoute) => {
-        let sameRoute = state.allRoutesOfTaiwan.filter((route) => {
-          return route.RouteUID === favoriteRoute.RouteUID;
-        });
-        if (sameRoute[0]) {
-          sameRoute[0].savedInFavorite = true;
+        let sameRoute = state.allRoutesOfTaiwan.find(
+          (route) => route.RouteUID === favoriteRoute.RouteUID
+        );
+        if (sameRoute) {
+          sameRoute.savedInFavorite = true;
         }
       });
     },
@@ -75,7 +66,11 @@ export default createStore({
       let allRoutesOfTaiwan = await tdx.getRoutesOfTaiwan(
         await context.state.allCitiesOfTaiwan
       );
-      await context.commit("setAllRoutesOfTaiwan", allRoutesOfTaiwan);
+      await context.commit(
+        "setAllRoutesOfTaiwanWithoutFavorite",
+        allRoutesOfTaiwan
+      );
+      await context.commit("setAllRoutesOfTaiwan");
     },
     async fetchAllDirectionsOfChosenRoute(context) {
       let allDirectionsOfChosenRoute =
