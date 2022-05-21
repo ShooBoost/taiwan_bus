@@ -167,7 +167,7 @@ export default {
       let res = await axios.get(`${apiUrl}`, {
         headers: await this.getAuthorizationHeader(),
       });
-      console.log("getRouteGEOJSON 拿到 tdx data 啦", apiUrl, res.data);
+      // console.log("getRouteGEOJSON 拿到 tdx data 啦", apiUrl, res.data);
       return res.data.features[0];
     } catch (err) {
       console.log(err);

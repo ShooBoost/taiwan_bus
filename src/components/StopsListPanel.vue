@@ -162,10 +162,9 @@ export default {
     ...mapGetters("stops", ["stopsOfChosenDirection", "chosenDirection"]),
   },
   props: ["prePage"],
-  emit: ["renewFavoriteRoutes"],
   components: { FavoriteBtn },
   methods: {
-    ...mapMutations(["setAllRoutesOfFavorite","setAllRoutesOfTaiwan"]),
+    ...mapMutations(["setAllRoutesOfFavorite", "setAllRoutesOfTaiwan"]),
     ...mapMutations("stops", [
       "setIndexOfChosenDirection",
       "setSequenceOfChosenStop",
@@ -175,16 +174,7 @@ export default {
       this.setIndexOfChosenDirection(dir);
       this.direction0Active = !this.direction0Active;
     },
-    saveToFavorite(saveOrNot) {
-      // this.allDirectionsOfChosenRoute.forEach((direction) => {
-      //   direction.savedInFavorite = saveOrNot;
-      // });
-      // this.$emit(
-      //   "renewFavoriteRoutes",
-      //   saveOrNot,
-      //   this.chosenDirection.RouteUID
-      // );
-      console.log(saveOrNot);
+    saveToFavorite() {
       this.setAllRoutesOfFavorite();
       this.setAllRoutesOfTaiwan();
     },

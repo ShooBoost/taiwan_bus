@@ -175,12 +175,7 @@
       <!-- 路線搜尋 結束 -->
       <!-- 特定路線的即時站牌資訊 開始 -->
       <div v-else class="overflow-scroll flex-grow-1">
-        <StopsListPanel
-          class="h100"
-          :prePage="nowPage"
-          @changeDirection="changeDirectionForMap"
-          @renewFavoriteRoutes="renewFavoriteRoutes"
-        ></StopsListPanel>
+        <StopsListPanel class="h100" :prePage="nowPage"></StopsListPanel>
       </div>
       <!-- 特定路線的即時站牌資訊 結束 -->
     </section>
@@ -267,7 +262,6 @@ export default {
     ]),
     ...mapMutations([
       "setAllRoutesOfTaiwan",
-      "setTest",
       "setChosenRoute",
       "setAllDirectionsOfChosenRoute",
       "setIsHomePage",
@@ -361,7 +355,6 @@ export default {
     this.windowHeight = document.getElementById("infoPanel").offsetHeight / 0.9;
   },
   created() {
-    this.setTest();
     this.fetchAllRoutesOfTaiwan();
 
     this.showFavoriteRoutesOrAllRoutesOfTaiwan();

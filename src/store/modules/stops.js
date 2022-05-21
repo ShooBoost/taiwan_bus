@@ -20,8 +20,7 @@ const getters = {
       ? parseInt(getters.stopsOfChosenDirection.length / 2)
       : state.sequenceOfChosenStop;
   },
-  stopsOfChosenDirection(state, getters, rootState) {
-    console.log(rootState.chosenRoute, getters.chosenDirection.Stops ? getters.chosenDirection.Stops : []);
+  stopsOfChosenDirection(state, getters) {
     return getters.chosenDirection.Stops ? getters.chosenDirection.Stops : [];
   },
   chosenDirection(state, getters, rootState) {
@@ -35,7 +34,6 @@ const mutations = {
   setIndexOfChosenDirection(state, payload) {
     state.indexOfChosenDirection = payload;
   },
-
   setSequenceOfChosenStop(state, payload) {
     state.sequenceOfChosenStop = payload;
   },

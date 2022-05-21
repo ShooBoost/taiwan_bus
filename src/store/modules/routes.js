@@ -4,15 +4,19 @@ const state = {
   geoJsonOfChosenRoute: {},
 };
 const getters = {
-  routesByKeywords(state, getters) {
-    let filterResult = [];
-    let reg = new RegExp(state.keywordsForSearchTheRoute);
-    getters.routesOfCurrentPage.forEach(function (route) {
-      if (reg.test(route.RouteName.Zh_tw + "*")) {
-        filterResult.push(route);
-      }
-    });
-    return filterResult;
+  routesByKeywords(state, getters, rootState) {
+    if (state.keywordsForSearchTheRoute || !rootState.isHomePage) {
+      let filterResult = [];
+      let reg = new RegExp(state.keywordsForSearchTheRoute);
+      getters.routesOfCurrentPage.forEach(function (route) {
+        if (reg.test(route.RouteName.Zh_tw + "*")) {
+          filterResult.push(route);
+        }
+      });
+      return filterResult;
+    } else {
+      return [];
+    }
   },
   routesOfCurrentPage(state, getters, rootState) {
     return rootState.isHomePage

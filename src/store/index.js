@@ -12,15 +12,9 @@ export default createStore({
     chosenRoute: {},
     allDirectionsOfChosenRoute: [],
     isHomePage: true,
-    test: { a: [0, 0, 0], b: [1, 1, 1] },
   },
   getters: {},
   mutations: {
-    setTest(state) {
-      // console.log(state.test);
-      state.test.a[0] = "change";
-      // console.log(state.test);
-    },
     setAllRoutesOfFavorite(state) {
       var localRouteList = localStorage.getItem("favoriteRouteList");
       state.allRoutesOfFavorite = localRouteList
